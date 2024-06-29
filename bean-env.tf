@@ -35,4 +35,86 @@ resource "aws_elastic_beanstalk_environment" "vprofile-bean-prod" {
     name      = "InstanceType"
     value     = "t2.micro"
   }
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "EC2KeyName"
+    value     = aws_key_pair.vprofilekey.key_name
+  }
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "Availability Zones"
+    value     = "Any 3"
+  }
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MinSize"
+    value     = "1"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MaxSize"
+    value     = "4"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "environment"
+    value     = "prod"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "LOGGING_APPENDER"
+    value     = "GRAYLOG"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "SystemType"
+    value     = "basic"  # Use "basic" for basic health reporting
+  }
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name      = "RollingUpdateEnabled"
+    value     = "true"
+  }
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name      = "RollingUpdateType"
+    value     = "Health"
+  }
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name      = "MaxBatchSize"
+    value     = "1"  # Adjust this value as needed
+  }
+  setting {
+    namespace = "aws:elb:policies"
+    name      = "StickinessEnabled"
+    value     = "true"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "BatchSizeType"
+    value     = "Fixed"  # or "Fixed"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "MaxBatchSize"
+    value     = "1"  # Adjust this value as needed
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:command"
+    name      = "DeploymentPolicy"
+    value     = "Rolling"  # Possible values: AllAtOnce, Rolling, RollingWithAdditionalBatch, Immutable
+  }
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "SecurityGroups"
+    value     = aws_security_group.vprofile-prod-sg  # Replace with your security group IDs
+  }
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "SecurityGroups"
+    value     = aws_security_group.vprofile-bean-elb-sg  # Replace with your security group IDs
+  }
+  depends_on = [aws_security_group.vprofile-backend-sg, aws_security_group.vprofile-bean-elb-sg]
 }
