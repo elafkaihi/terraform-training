@@ -33,3 +33,5 @@ override.tf.json
 .terraformrc
 terraform.rc
 vars.tf
+vprofile-key
+vprofile-key.pub
