@@ -74,7 +74,7 @@ resource "aws_security_group" "vprofile-backend-sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [aws_security_group.vprofile-prod-sg.id]
+    cidr_blocks = [aws_security_group.vprofile-prod-sg.id, aws_security_group.vprofile-bastion-sg.id]
   }
 }
 

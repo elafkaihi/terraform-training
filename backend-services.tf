@@ -33,7 +33,7 @@ resource "aws_db_instance" "vprofile-rds" {
   engine                 = "mysql"
   engine_version         = "8.0"
   instance_class         = "db.t2.micro"
-  name                   = var.dbname
+  db_name                   = var.dbname
   username               = var.dbuser
   password               = var.dbpass
   parameter_group_name   = "default.mysql8.0"
@@ -64,7 +64,7 @@ resource "aws_elasticache_cluster" "elafkaihi-cache" {
 
 resource "aws_mq_broker" "elafkaihi-rmq" {
   broker_name          = "elafkaihi-broker"
-  broker_instance_type = "mq.t2.micro"
+  host_instance_type = "mq.t2.micro"
   engine_type          = "ActiveMQ"
   engine_version       = "5.15.14"
   security_groups      = [aws_security_group.vprofile-backend-sg.id]
