@@ -63,12 +63,12 @@ resource "aws_elasticache_cluster" "elafkaihi-cache" {
 }
 
 resource "aws_mq_broker" "elafkaihi-rmq" {
-  broker_name                = "elafkaihi-broker"
-  broker_instance_type       = "mq.t2.micro"
-  engine_type                = "ActiveMQ"
-  engine_version             = "5.15.14"
-  security_groups            = [aws_security_group.vprofile-backend-sg.id]
-  subnet_ids                 = [module.vpc.private_subnets[0]]
+  broker_name          = "elafkaihi-broker"
+  broker_instance_type = "mq.t2.micro"
+  engine_type          = "ActiveMQ"
+  engine_version       = "5.15.14"
+  security_groups      = [aws_security_group.vprofile-backend-sg.id]
+  subnet_ids           = [module.vpc.private_subnets[0]]
   user {
     username = var.rmquser
     password = var.rmqpass

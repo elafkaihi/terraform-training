@@ -1,8 +1,8 @@
 resource "aws_elastic_beanstalk_environment" "vprofile-bean-prod" {
-  name = "vprofile-bean-prod"
-  application = aws_elastic_beanstalk_application.vprofile-prod
+  name                = "vprofile-bean-prod"
+  application         = aws_elastic_beanstalk_application.vprofile-prod
   solution_stack_name = " 64bit Amazon Linux 2023 v5.1.8 running Tomcat 10 Corretto 17"
-  cname_prefix = "vprofile-bean-prod"
+  cname_prefix        = "vprofile-bean-prod"
 
   setting {
     namespace = "aws:ec2:vpc"
@@ -69,7 +69,7 @@ resource "aws_elastic_beanstalk_environment" "vprofile-bean-prod" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "SystemType"
-    value     = "basic"  # Use "basic" for basic health reporting
+    value     = "basic" # Use "basic" for basic health reporting
   }
   setting {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
@@ -84,7 +84,7 @@ resource "aws_elastic_beanstalk_environment" "vprofile-bean-prod" {
   setting {
     namespace = "aws:autoscaling:updatepolicy:rollingupdate"
     name      = "MaxBatchSize"
-    value     = "1"  # Adjust this value as needed
+    value     = "1" # Adjust this value as needed
   }
   setting {
     namespace = "aws:elb:policies"
@@ -94,27 +94,27 @@ resource "aws_elastic_beanstalk_environment" "vprofile-bean-prod" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "BatchSizeType"
-    value     = "Fixed"  # or "Fixed"
+    value     = "Fixed" # or "Fixed"
   }
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "MaxBatchSize"
-    value     = "1"  # Adjust this value as needed
+    value     = "1" # Adjust this value as needed
   }
   setting {
     namespace = "aws:elasticbeanstalk:command"
     name      = "DeploymentPolicy"
-    value     = "Rolling"  # Possible values: AllAtOnce, Rolling, RollingWithAdditionalBatch, Immutable
+    value     = "Rolling" # Possible values: AllAtOnce, Rolling, RollingWithAdditionalBatch, Immutable
   }
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
-    value     = aws_security_group.vprofile-prod-sg  # Replace with your security group IDs
+    value     = aws_security_group.vprofile-prod-sg # Replace with your security group IDs
   }
   setting {
     namespace = "aws:elbv2:loadbalancer"
     name      = "SecurityGroups"
-    value     = aws_security_group.vprofile-bean-elb-sg  # Replace with your security group IDs
+    value     = aws_security_group.vprofile-bean-elb-sg # Replace with your security group IDs
   }
   depends_on = [aws_security_group.vprofile-backend-sg, aws_security_group.vprofile-bean-elb-sg]
 }
