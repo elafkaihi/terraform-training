@@ -5,6 +5,8 @@ resource "aws_instance" "bastion_host" {
   key_name      = aws_key_pair.vprofilekey.key_name
   count         = var.instance_count
 
+  associate_public_ip_address = true  # Ensure the instance has a public IP
+
   security_groups = [
     aws_security_group.vprofile-bastion-sg.id
   ]
@@ -27,6 +29,7 @@ resource "aws_instance" "bastion_host" {
   }
 
   connection {
+    type        = "ssh"
     user        = var.username
     private_key = file(var.PRIV_KEY_PATH)
     host        = self.public_ip

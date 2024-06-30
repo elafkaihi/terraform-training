@@ -1,7 +1,7 @@
 resource "aws_security_group" "vprofile-bean-elb-sg" {
   name        = "vprofile-bean-elb-sg"
   description = "sg for elastic lb of beanstalk "
-  vpc_id      = module.vpc.default_vpc_id
+  vpc_id      = module.vpc.vpc_id
   egress {
     description = "allow all outbound traffic"
     from_port   = 0
@@ -16,12 +16,13 @@ resource "aws_security_group" "vprofile-bean-elb-sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  depends_on = [module.vpc]
 }
 
 resource "aws_security_group" "vprofile-bastion-sg" {
   name        = "vprofile-bastion-sg"
   description = "sg for bastion host "
-  vpc_id      = module.vpc.default_vpc_id
+  vpc_id      = module.vpc.vpc_id
   egress {
     description = "allow all outbound traffic"
     from_port   = 0
@@ -36,12 +37,13 @@ resource "aws_security_group" "vprofile-bastion-sg" {
     protocol    = "tcp"
     cidr_blocks = [var.My_IP]
   }
+  depends_on = [module.vpc]
 }
 
 resource "aws_security_group" "vprofile-prod-sg" {
   name        = "vprofile-prod-sg"
   description = "sg for beanstalk instances "
-  vpc_id      = module.vpc.default_vpc_id
+  vpc_id      = module.vpc.vpc_id
   egress {
     description = "allow all outbound traffic"
     from_port   = 0
@@ -54,14 +56,15 @@ resource "aws_security_group" "vprofile-prod-sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [aws_security_group.vprofile-bastion-sg.id]
+    security_groups = [aws_security_group.vprofile-bastion-sg.id]
   }
+  depends_on = [module.vpc]
 }
 
 resource "aws_security_group" "vprofile-backend-sg" {
   name        = "vprofile-backend-sg"
   description = "sg for backend "
-  vpc_id      = module.vpc.default_vpc_id
+  vpc_id      = module.vpc.vpc_id
   egress {
     description = "allow all outbound traffic"
     from_port   = 0
@@ -74,8 +77,9 @@ resource "aws_security_group" "vprofile-backend-sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [aws_security_group.vprofile-prod-sg.id, aws_security_group.vprofile-bastion-sg.id]
+    security_groups = [aws_security_group.vprofile-prod-sg.id, aws_security_group.vprofile-bastion-sg.id]
   }
+  depends_on = [module.vpc]
 }
 
 resource "aws_security_group_rule" "sec_group_allow_itself" {
@@ -84,5 +88,5 @@ resource "aws_security_group_rule" "sec_group_allow_itself" {
   to_port                  = 65535
   protocol                 = "tcp"
   security_group_id        = aws_security_group.vprofile-backend-sg.id
-  source_security_group_id = aws_security_group.vprofile-backend-sg
+  source_security_group_id = aws_security_group.vprofile-backend-sg.id
 }
